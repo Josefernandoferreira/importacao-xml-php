@@ -1,0 +1,8 @@
+### INSTUÇÕES PARA USAR ####
+
+1 - O arquivo do banco de dados está em src/db/nf.sql.
+2 - Após criar o banco de dados, execute comando abaixo para iniciar o servidor PHP:
+    ### PHP: php -S Localhost:8080
+
+### Desenvolvido por: ###
+José Fernando Ferreira Araújo.
