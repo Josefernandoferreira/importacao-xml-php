@@ -1,7 +1,7 @@
 <?php
-    require('src/service/ProcessarXML.php');
+    require('src/service/ProcessaXML.php');
     $xmlDoc = new DOMDocument();
-    $processarXML = new ProcessarXML();
+    $processaXML = new ProcessaXML();
 ?>
 
 <html lang="PT-BR">
@@ -22,12 +22,12 @@
 
         <?php } else {
 
-            if($processarXML->verificaExtensao($_FILES['doc']['name']) == "xml"){
+            if($processaXML->verificaExtensao($_FILES['doc']['name']) == "xml"){
 
                 if (isset($_FILES['doc']) && ($_FILES['doc']['error'] == UPLOAD_ERR_OK)) {
 
                     $xml = simplexml_load_file($_FILES['doc']['tmp_name']);
-                    $dadosXML = $processarXML->lerXML($xml); ?>
+                    $dadosXML = $processaXML->lerXML($xml); ?>
 
                         <table id="customers" align="center">
                             <tr>
@@ -102,6 +102,10 @@
                                 <td>Valor da NF</td>
                                 <td><?=$dadosXML['valorNF'];?></td>
                             </tr>
+                            <tr>
+                                <td>nProt</td>
+                                <td><b><?=$dadosXML['nProt'];?></b></td>
+                            </tr>
                         </table>
                 <?php
 
@@ -111,12 +115,12 @@
                 $destinatarioCNPJ = isset($dadosXML['destinatario']->CNPJ) ? $dadosXML['destinatario']->CNPJ : "Não Informado"; ?>
 
                 <div align="center">
-                <?php $processarXML->cadastrarNF(
+                <?php $processaXML->cadastrarNF(
                             $dadosXML["numeroNF"], $dadosXML["dataEmissaoNF"], $dadosXML['valorNF'],
                             $dadosXML["destinatario"], $dadosXML["enderecoEmitente"]
                         );
             } else {
-                echo $processarXML->retornaMsg(
+                echo $processaXML->retornaMsg(
                     "<div align='center'>
                             <p class='msg f-color-erro'>
                                 Você não pode importar essa NFe!
@@ -126,7 +130,7 @@
                 }
             }
         } else {
-            echo $processarXML->retornaMsg(
+            echo $processaXML->retornaMsg(
                 "<div align='center'>
                         <p class='msg f-color-erro'>
                             Este arquivo não é XML!

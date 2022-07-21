@@ -2,7 +2,7 @@
 
 require('src/config/ConectaDB.php');
 
-class ProcessarXML
+class ProcessaXML
 {
 
     private $conectarDB;
@@ -69,27 +69,34 @@ class ProcessarXML
 
     public function lerXML($xml){
 
-        $numeroNFe = isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe["Id"] : $xml->infNFe["Id"];
-        $dataEmissaoNFe = new DateTime(isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe->ide->dhEmi : $xml->infNFe->ide->dhEmi);
-        $nf_valor = isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe->total->ICMSTot->vNF : $xml->infNFe->total->ICMSTot->vNF;
 
+        $dadosXML = self::retornaXML($xml);
+
+
+        $numeroNFe = $dadosXML["Id"];
+        $dataEmissaoNFe = new DateTime($dadosXML->ide);
         $dataFormatada = $dataEmissaoNFe->format('Y/m/d');
+        $nf_valor = $dadosXML->total->ICMSTot->vNF;
 
-        foreach(isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe->dest : $xml->infNFe->dest as $dest) {
+
+        $nProt = isset($xml->protNFe->infProt->nProt) ? "nProt Existe:". $xml->protNFe->infProt->nProt: "nProt Não Existe";
+
+        foreach($dadosXML->dest as $dest) {
             $dadosNF['destinatario'] = $dest;
         }
 
-        foreach(isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe->emit : $xml->infNFe->emit as $emit) {
+        foreach($dadosXML->emit as $emit) {
             $dadosNF['emitente'] = $emit;
         }
 
-        foreach(isset($xml->NFe->infNFe["Id"]) ? $xml->NFe->infNFe->emit->enderEmit : $xml->infNFe->emit->enderEmit as $enderEmit) {
+        foreach($dadosXML->emit->enderEmit as $enderEmit) {
             $dadosNF['enderecoEmitente'] = $enderEmit;
         }
 
         $dadosNF['numeroNF'] = $numeroNFe;
         $dadosNF['dataEmissaoNF'] = $dataFormatada;
         $dadosNF['valorNF'] = $nf_valor;
+        $dadosNF['nProt']=$nProt;
 
         return $dadosNF;
     }
@@ -101,5 +108,9 @@ class ProcessarXML
 
     public function retornaMsg($msg){
         return $msg;
+    }
+
+    public function retornaXML($xml){
+        return $dadosXML = isset($xml->NFe->infNFe["Id"])? $xml->NFe->infNFe: $xml->infNFe;
     }
 }
